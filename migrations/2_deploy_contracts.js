@@ -1,5 +1,5 @@
-var LunchVote = artifacts.require("./LunchVote.sol");
+var TravelVote = artifacts.require("./TravelVote.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(LunchVote);
+  deployer.deploy(TravelVote);
 };

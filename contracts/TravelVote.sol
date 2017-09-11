@@ -1,6 +1,6 @@
 pragma solidity ^0.4.15;
 
-contract LunchVote {
+contract TravelVote {
   address public owner;
   bool public inProgress;
   string public title;
@@ -14,7 +14,7 @@ contract LunchVote {
     _;
   }
 
-  function LunchVote() {
+  function TravelVote() {
     owner = msg.sender;
     inProgress = false;
   }

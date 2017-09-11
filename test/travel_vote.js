@@ -1,9 +1,9 @@
-const LunchVote = artifacts.require("./LunchVote.sol")
+const TravelVote = artifacts.require("./TravelVote.sol")
 import expectThrow from './helpers/expectThrow';
 import assertJump from './helpers/assertJump';
 
-contract('LunchVote', (accounts) => {
-  let lunchVote;
+contract('TravelVote', (accounts) => {
+  let travelVote;
   const resultEnum = {
     Success: 0,
     Failed: 1,
@@ -11,19 +11,19 @@ contract('LunchVote', (accounts) => {
   }
 
   beforeEach(async function () {
-    lunchVote = await LunchVote.new();
+    travelVote = await TravelVote.new();
   });
 
 
   it("sets sender as owner", async () => {
-    const owner = await lunchVote.owner()
+    const owner = await travelVote.owner()
 
     assert.equal(owner, accounts[0])
   })
 
   describe("getVotors", () => {
     it("return voters", async () => {
-      const voters = await lunchVote.getVoters()
+      const voters = await travelVote.getVoters()
 
       assert.isArray(voters)
     })
@@ -31,31 +31,31 @@ contract('LunchVote', (accounts) => {
 
   describe('vote', () => {
     it("adds voter", async () => {
-      await lunchVote.vote(true)
-      const voters = await lunchVote.getVoters()
+      await travelVote.vote(true)
+      const voters = await travelVote.getVoters()
 
       assert.include(voters, accounts[0])
     })
 
     it("adds agreementCount if support", async () => {
-      await lunchVote.vote(true)
-      const count = await lunchVote.agreementCount()
+      await travelVote.vote(true)
+      const count = await travelVote.agreementCount()
 
       assert.equal(count, 1)
     })
 
     it("doesn't adds agreementCount if support", async () => {
-      await lunchVote.vote(false)
-      const count = await lunchVote.agreementCount()
+      await travelVote.vote(false)
+      const count = await travelVote.agreementCount()
 
       assert.equal(count, 0)
     })
 
     it("can't vote more than once", async () => {
-      await lunchVote.vote(true)
+      await travelVote.vote(true)
 
       await expectThrow(
-        lunchVote.vote(true)
+        travelVote.vote(true)
       )
     })
   })
@@ -64,36 +64,36 @@ contract('LunchVote', (accounts) => {
     const newTitle = "Restuarant in front of our office";
 
     beforeEach(async function () {
-      await lunchVote.start(newTitle)
+      await travelVote.start(newTitle)
     });
 
     it("toggles inProgress as false", async () => {
-      await lunchVote.close()
-      const inProgress = await lunchVote.inProgress()
+      await travelVote.close()
+      const inProgress = await travelVote.inProgress()
 
       assert.isFalse(inProgress)
     })
 
     describe('sets result', () => {
       it("even", async () => {
-        await lunchVote.close()
-        const result = await lunchVote.result()
+        await travelVote.close()
+        const result = await travelVote.result()
 
         assert.equal(result, resultEnum.Even)
       })
 
       it("faied", async () => {
-        await lunchVote.vote(false)
-        await lunchVote.close()
-        const result = await lunchVote.result()
+        await travelVote.vote(false)
+        await travelVote.close()
+        const result = await travelVote.result()
 
         assert.equal(result, resultEnum.Failed)
       })
 
       it("success", async () => {
-        await lunchVote.vote(true)
-        await lunchVote.close()
-        const result = await lunchVote.result()
+        await travelVote.vote(true)
+        await travelVote.close()
+        const result = await travelVote.result()
 
         assert.equal(result, resultEnum.Success)
       })
@@ -104,34 +104,34 @@ contract('LunchVote', (accounts) => {
     const newTitle = "Restuarant in front of our office";
 
     it("toggles inProgress as true", async () => {
-      await lunchVote.start(newTitle)
-      const inProgress = await lunchVote.inProgress()
+      await travelVote.start(newTitle)
+      const inProgress = await travelVote.inProgress()
 
       assert.isTrue(inProgress)
     })
 
     it("sets vote title", async () => {
-      await lunchVote.start(newTitle)
-      const contractTitle = await lunchVote.title()
+      await travelVote.start(newTitle)
+      const contractTitle = await travelVote.title()
 
       assert.equal(contractTitle, newTitle)
     })
 
     it("only togglable when not in process", async () => {
-      await lunchVote.start(newTitle)
+      await travelVote.start(newTitle)
 
       await expectThrow(
-        lunchVote.start(newTitle)
+        travelVote.start(newTitle)
       )
     })
 
     describe('ownable', () => {
       it('should prevent non-owners from transfering', async function () {
         const other = accounts[2];
-        const owner = await lunchVote.owner.call();
+        const owner = await travelVote.owner.call();
         assert.isTrue(owner !== other);
         try {
-          await lunchVote.start(newTitle, { from: other });
+          await travelVote.start(newTitle, { from: other });
           assert.fail('should have thrown before');
         } catch (error) {
           assertJump(error);
