@@ -5,6 +5,7 @@ contract LunchVote {
   bool public inProgress;
   string public title;
   address[] voters;
+  uint public agreementCount;
 
   modifier onlyOwner {
     require(msg.sender == owner);
@@ -31,12 +32,17 @@ contract LunchVote {
     return voters;
   }
 
-  function vote() {
+  function vote(bool yes) {
     for (uint index = 0; index < voters.length; index++) {
       if (voters[index] == msg.sender) {
         require(false);
       }
     }
+
+    if (yes) {
+      agreementCount = agreementCount + 1;
+    }
+
     voters.push(msg.sender);
   }
 }

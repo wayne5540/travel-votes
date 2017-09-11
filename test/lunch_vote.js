@@ -27,17 +27,31 @@ contract('LunchVote', (accounts) => {
 
   describe('vote', () => {
     it("adds voter", async () => {
-      await lunchVote.vote()
+      await lunchVote.vote(true)
       const voters = await lunchVote.getVoters()
 
       assert.include(voters, accounts[0])
     })
 
+    it("adds agreementCount if support", async () => {
+      await lunchVote.vote(true)
+      const count = await lunchVote.agreementCount()
+
+      assert.equal(count, 1)
+    })
+
+    it("doesn't adds agreementCount if support", async () => {
+      await lunchVote.vote(false)
+      const count = await lunchVote.agreementCount()
+
+      assert.equal(count, 0)
+    })
+
     it("can't vote more than once", async () => {
-      await lunchVote.vote()
+      await lunchVote.vote(true)
 
       await expectThrow(
-        lunchVote.vote()
+        lunchVote.vote(true)
       )
     })
   })
