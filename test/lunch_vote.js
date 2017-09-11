@@ -1,5 +1,6 @@
 const LunchVote = artifacts.require("./LunchVote.sol")
 import expectThrow from './helpers/expectThrow';
+import assertJump from './helpers/assertJump';
 
 contract('LunchVote', (accounts) => {
   let lunchVote;
@@ -29,6 +30,20 @@ contract('LunchVote', (accounts) => {
       await expectThrow(
         lunchVote.startVote()
       )
+    })
+
+    describe('ownable', () => {
+      it('should prevent non-owners from transfering', async function () {
+        const other = accounts[2];
+        const owner = await lunchVote.owner.call();
+        assert.isTrue(owner !== other);
+        try {
+          await lunchVote.startVote({ from: other });
+          assert.fail('should have thrown before');
+        } catch (error) {
+          assertJump(error);
+        }
+      });
     })
   })
 })
