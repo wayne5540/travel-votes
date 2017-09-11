@@ -1,0 +1,11 @@
+{
+  "name": "lunch-votes",
+  "version": "1.0.0",
+  "author": "Wayne <wayne.5540@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-register": "^6.26.0"
+  }
+}
