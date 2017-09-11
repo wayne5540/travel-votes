@@ -2,44 +2,33 @@ const LunchVote = artifacts.require("./LunchVote.sol")
 import expectThrow from './helpers/expectThrow';
 
 contract('LunchVote', (accounts) => {
+  let lunchVote;
+
+  beforeEach(async function () {
+    lunchVote = await LunchVote.new();
+  });
+
+
   it("sets sender as owner", async () => {
-    let instance = await LunchVote.deployed()
-    let owner = await instance.owner()
+    let owner = await lunchVote.owner()
 
     return assert.equal(owner, accounts[0])
-  }) 
+  })
 
-  // describe('startVote', () => {
-  //   it("toggles inProgress as true", () => {
-  //     return LunchVote.deployed().then((instance) => {
-  //       instance.startVote()
-  //       return instance.inProgress();
-  //     }).then((inProgress) => (
-  //       assert.equal(inProgress, true)
-  //     ))
-  //   })
+  describe('startVote', () => {
+    it("toggles inProgress as true", async () => {
+      await lunchVote.startVote()
+      let inProgress = await lunchVote.inProgress()
 
-  //   it("only toggable when not in progress", () => {
-  //     return LunchVote.deployed().then((instance) => {
-  //       instance.startVote()
-  //       return instance;
-  //     }).then((instance) => {
-  //       instance.startVote()
-  //       return instance.inProgress();
-  //     }).then((inProgress) => (
-  //       assert.equal(inProgress, true)
-  //     ))
-  //   })
-  // })
+      return assert.equal(inProgress, true)
+    })
 
-  // it("toggles inProgress as true", () => {
-  //   LunchVote.deployed().then((instance) => {
-  //     instance.startVote()
-  //     return instance;
-  //   }).then((instance) => (
-  //     instance.inProgress()
-  //   )).then((inProgress) => (
-  //     assert.equal("inProgress", "123")
-  //   ))
-  // })
+    it("only togglable when not in process", async () => {
+      await lunchVote.startVote()
+
+      await expectThrow(
+        lunchVote.startVote()
+      )
+    })
+  })
 })
