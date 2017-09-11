@@ -2,10 +2,11 @@ pragma solidity ^0.4.15;
 
 contract LunchVote {
   address public owner;
-  address[] public voters;
   bool public inProgress;
   string public title;
-  
+  address[] voters;
+
+
   modifier onlyOwner {
     require(msg.sender == owner);
     _;
@@ -25,5 +26,18 @@ contract LunchVote {
   function close() onlyOwner {
     require(inProgress != false);
     inProgress = false;
+  }
+
+  function getVoters() constant returns (address[]) {
+    return voters;
+  }
+
+  function vote() {
+    // if (yes) {
+      
+    // } else {
+      
+    // }
+    voters.push(msg.sender);
   }
 }

@@ -16,6 +16,23 @@ contract('LunchVote', (accounts) => {
     assert.equal(owner, accounts[0])
   })
 
+
+  describe("getVotors", () => {
+    it("return voters", async () => {
+      const voters = await lunchVote.getVoters()
+
+      assert.isArray(voters)
+    })
+  })
+  // describe('vote', () => {
+  //   it("adds voter", async () => {
+  //     await lunchVote.vote()
+  //     const voters = await lunchVote.getVoters()
+
+  //     assert.include(voters, accounts[0])
+  //   })
+  // })
+
   describe('close', () => {
     const newTitle = "Restuarant in front of our office";
 
