@@ -12,7 +12,7 @@ contract('LunchVote', (accounts) => {
   it("sets sender as owner", async () => {
     let owner = await lunchVote.owner()
 
-    return assert.equal(owner, accounts[0])
+    assert.equal(owner, accounts[0])
   })
 
   describe('startVote', () => {
@@ -20,7 +20,7 @@ contract('LunchVote', (accounts) => {
       await lunchVote.startVote()
       let inProgress = await lunchVote.inProgress()
 
-      return assert.equal(inProgress, true)
+      assert.equal(inProgress, true)
     })
 
     it("only togglable when not in process", async () => {

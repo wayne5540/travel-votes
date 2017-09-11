@@ -5,12 +5,17 @@ contract LunchVote {
   address[] public voters;
   bool public inProgress;
   
+  modifier onlyOwner {
+    require(msg.sender == owner);
+    _;
+  }
+
   function LunchVote() {
     owner = msg.sender;
     inProgress = false;
   }
 
-  function startVote() {
+  function startVote() onlyOwner {
     require(inProgress != true);
     inProgress = true;
   }
