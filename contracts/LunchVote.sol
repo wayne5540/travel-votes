@@ -27,8 +27,16 @@ contract LunchVote {
 
   function close() onlyOwner {
     require(inProgress != false);
+
     inProgress = false;
-    result = Results.Even;
+
+    if (agreementCount == voters.length - agreementCount) {
+      result = Results.Even;
+    } else if (agreementCount > voters.length - agreementCount) {
+      result = Results.Success;
+    } else {
+      result = Results.Failed;
+    }
   }
 
   function getVoters() constant returns (address[]) {

@@ -4,6 +4,11 @@ import assertJump from './helpers/assertJump';
 
 contract('LunchVote', (accounts) => {
   let lunchVote;
+  const resultEnum = {
+    Success: 0,
+    Failed: 1,
+    Even: 2
+  }
 
   beforeEach(async function () {
     lunchVote = await LunchVote.new();
@@ -16,7 +21,6 @@ contract('LunchVote', (accounts) => {
     assert.equal(owner, accounts[0])
   })
 
-
   describe("getVotors", () => {
     it("return voters", async () => {
       const voters = await lunchVote.getVoters()
@@ -24,14 +28,6 @@ contract('LunchVote', (accounts) => {
       assert.isArray(voters)
     })
   })
-
-  // describe("getResult", () => {
-  //   it("return success", async () => {
-  //     const result = await lunchVote.getResult()
-
-  //     assert.equal(result, 1)
-  //   })
-  // })
 
   describe('vote', () => {
     it("adds voter", async () => {
@@ -66,11 +62,6 @@ contract('LunchVote', (accounts) => {
 
   describe('close', () => {
     const newTitle = "Restuarant in front of our office";
-    const resultEnum = {
-      Success: 0,
-      Failed: 1,
-      Even: 2
-    }
 
     beforeEach(async function () {
       await lunchVote.start(newTitle)
@@ -83,11 +74,29 @@ contract('LunchVote', (accounts) => {
       assert.isFalse(inProgress)
     })
 
-    it("sets result", async () => {
-      await lunchVote.close()
-      const result = await lunchVote.result()
+    describe('sets result', () => {
+      it("even", async () => {
+        await lunchVote.close()
+        const result = await lunchVote.result()
 
-      assert.equal(result, resultEnum.Even)
+        assert.equal(result, resultEnum.Even)
+      })
+
+      it("faied", async () => {
+        await lunchVote.vote(false)
+        await lunchVote.close()
+        const result = await lunchVote.result()
+
+        assert.equal(result, resultEnum.Failed)
+      })
+
+      it("success", async () => {
+        await lunchVote.vote(true)
+        await lunchVote.close()
+        const result = await lunchVote.result()
+
+        assert.equal(result, resultEnum.Success)
+      })
     })
   })
 
