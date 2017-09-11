@@ -25,6 +25,14 @@ contract('LunchVote', (accounts) => {
     })
   })
 
+  // describe("getResult", () => {
+  //   it("return success", async () => {
+  //     const result = await lunchVote.getResult()
+
+  //     assert.equal(result, 1)
+  //   })
+  // })
+
   describe('vote', () => {
     it("adds voter", async () => {
       await lunchVote.vote(true)
@@ -58,6 +66,11 @@ contract('LunchVote', (accounts) => {
 
   describe('close', () => {
     const newTitle = "Restuarant in front of our office";
+    const resultEnum = {
+      Success: 0,
+      Failed: 1,
+      Even: 2
+    }
 
     beforeEach(async function () {
       await lunchVote.start(newTitle)
@@ -68,6 +81,13 @@ contract('LunchVote', (accounts) => {
       const inProgress = await lunchVote.inProgress()
 
       assert.isFalse(inProgress)
+    })
+
+    it("sets result", async () => {
+      await lunchVote.close()
+      const result = await lunchVote.result()
+
+      assert.equal(result, resultEnum.Even)
     })
   })
 

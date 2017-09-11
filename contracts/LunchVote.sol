@@ -6,6 +6,8 @@ contract LunchVote {
   string public title;
   address[] voters;
   uint public agreementCount;
+  enum Results { Success, Failed, Even }
+  Results public result;
 
   modifier onlyOwner {
     require(msg.sender == owner);
@@ -26,6 +28,7 @@ contract LunchVote {
   function close() onlyOwner {
     require(inProgress != false);
     inProgress = false;
+    result = Results.Even;
   }
 
   function getVoters() constant returns (address[]) {
