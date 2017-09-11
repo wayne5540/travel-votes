@@ -11,24 +11,33 @@ contract('LunchVote', (accounts) => {
 
 
   it("sets sender as owner", async () => {
-    let owner = await lunchVote.owner()
+    const owner = await lunchVote.owner()
 
     assert.equal(owner, accounts[0])
   })
 
   describe('startVote', () => {
+    const newTitle = "Restuarant in front of our office";
+
     it("toggles inProgress as true", async () => {
-      await lunchVote.startVote()
-      let inProgress = await lunchVote.inProgress()
+      await lunchVote.startVote(newTitle)
+      const inProgress = await lunchVote.inProgress()
 
       assert.equal(inProgress, true)
     })
 
+    it("sets vote title", async () => {
+      await lunchVote.startVote(newTitle)
+      const contractTitle = await lunchVote.title()
+
+      assert.equal(contractTitle, newTitle)
+    })
+
     it("only togglable when not in process", async () => {
-      await lunchVote.startVote()
+      await lunchVote.startVote(newTitle)
 
       await expectThrow(
-        lunchVote.startVote()
+        lunchVote.startVote(newTitle)
       )
     })
 
@@ -38,7 +47,7 @@ contract('LunchVote', (accounts) => {
         const owner = await lunchVote.owner.call();
         assert.isTrue(owner !== other);
         try {
-          await lunchVote.startVote({ from: other });
+          await lunchVote.startVote(newTitle, { from: other });
           assert.fail('should have thrown before');
         } catch (error) {
           assertJump(error);

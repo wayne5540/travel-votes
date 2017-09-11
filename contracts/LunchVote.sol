@@ -4,6 +4,7 @@ contract LunchVote {
   address public owner;
   address[] public voters;
   bool public inProgress;
+  string public title;
   
   modifier onlyOwner {
     require(msg.sender == owner);
@@ -15,8 +16,9 @@ contract LunchVote {
     inProgress = false;
   }
 
-  function startVote() onlyOwner {
+  function startVote(string newTitle) onlyOwner {
     require(inProgress != true);
     inProgress = true;
+    title = newTitle;
   }
 }
