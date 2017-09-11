@@ -6,7 +6,6 @@ contract LunchVote {
   string public title;
   address[] voters;
 
-
   modifier onlyOwner {
     require(msg.sender == owner);
     _;
@@ -33,11 +32,11 @@ contract LunchVote {
   }
 
   function vote() {
-    // if (yes) {
-      
-    // } else {
-      
-    // }
+    for (uint index = 0; index < voters.length; index++) {
+      if (voters[index] == msg.sender) {
+        require(false);
+      }
+    }
     voters.push(msg.sender);
   }
 }
