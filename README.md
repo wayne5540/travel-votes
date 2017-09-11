@@ -1,18 +1,24 @@
-# Lunch votes
+# Travel votes
 
 A ethereum contract written in Sodility for practicing.
 
 ## Features
 
-### As an owner
+### 所有人
 
-- [] I can start a vote
-- [] I can close a vote
+- [] 可以新增要去的地點提案
+- [] 可以投票參與（一個地點限一票），可以選擇 「參與」、「不參與」、「考慮看看」
+- [] 可以看到每個提案目前參與和不參與的人數
+- [] 可以更改投票的狀態，例如把「參與」變成「不參與」
 
-### As a voter
+### 提案發起人
 
-- [] I can vote
-- [] I can see vote result
+- [] 可以結束提案
+- [] 一但提案結束，不允許任何人再投票或是改變投票狀態
+
+### As contract owner
+
+- [] 可以刪除提案
 
 ## Development
 
