@@ -16,28 +16,43 @@ contract('LunchVote', (accounts) => {
     assert.equal(owner, accounts[0])
   })
 
-  describe('startVote', () => {
+  describe('close', () => {
+    const newTitle = "Restuarant in front of our office";
+
+    beforeEach(async function () {
+      await lunchVote.start(newTitle)
+    });
+
+    it("toggles inProgress as false", async () => {
+      await lunchVote.close()
+      const inProgress = await lunchVote.inProgress()
+
+      assert.isFalse(inProgress)
+    })
+  })
+
+  describe('start', () => {
     const newTitle = "Restuarant in front of our office";
 
     it("toggles inProgress as true", async () => {
-      await lunchVote.startVote(newTitle)
+      await lunchVote.start(newTitle)
       const inProgress = await lunchVote.inProgress()
 
-      assert.equal(inProgress, true)
+      assert.isTrue(inProgress)
     })
 
     it("sets vote title", async () => {
-      await lunchVote.startVote(newTitle)
+      await lunchVote.start(newTitle)
       const contractTitle = await lunchVote.title()
 
       assert.equal(contractTitle, newTitle)
     })
 
     it("only togglable when not in process", async () => {
-      await lunchVote.startVote(newTitle)
+      await lunchVote.start(newTitle)
 
       await expectThrow(
-        lunchVote.startVote(newTitle)
+        lunchVote.start(newTitle)
       )
     })
 
@@ -47,7 +62,7 @@ contract('LunchVote', (accounts) => {
         const owner = await lunchVote.owner.call();
         assert.isTrue(owner !== other);
         try {
-          await lunchVote.startVote(newTitle, { from: other });
+          await lunchVote.start(newTitle, { from: other });
           assert.fail('should have thrown before');
         } catch (error) {
           assertJump(error);

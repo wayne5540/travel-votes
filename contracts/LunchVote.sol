@@ -16,9 +16,14 @@ contract LunchVote {
     inProgress = false;
   }
 
-  function startVote(string newTitle) onlyOwner {
+  function start(string newTitle) onlyOwner {
     require(inProgress != true);
     inProgress = true;
     title = newTitle;
+  }
+
+  function close() onlyOwner {
+    require(inProgress != false);
+    inProgress = false;
   }
 }
