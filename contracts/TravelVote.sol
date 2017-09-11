@@ -3,11 +3,25 @@ pragma solidity ^0.4.15;
 contract TravelVote {
   address public owner;
 
+  struct Proposal {
+    string destination;
+    address creator;
+    uint voteCount;
+  }
+
+  Proposal[] public proposals;
+
   function TravelVote() {
     owner = msg.sender;
   }
 
-
+  function createProposal(string destination) {
+    proposals.push(Proposal({
+      destination: destination,
+      creator: msg.sender,
+      voteCount: 0
+    }));
+  }
 
 
   // address public owner;

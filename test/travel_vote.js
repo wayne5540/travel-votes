@@ -4,6 +4,11 @@ import assertJump from './helpers/assertJump';
 
 contract('TravelVote', (accounts) => {
   let travelVote;
+  const proposalStruct = {
+    destination: 0,
+    creator: 1,
+    voteCount: 2
+  }
 
   beforeEach(async function () {
     travelVote = await TravelVote.new();
@@ -13,6 +18,35 @@ contract('TravelVote', (accounts) => {
     const owner = await travelVote.owner()
 
     assert.equal(owner, accounts[0])
+  })
+
+  describe("createProposal", () => {
+    const destination = "Disney Land"
+
+    beforeEach(async function () {
+      await travelVote.createProposal(destination)
+    });
+
+    it("creates proposal", async () => {
+      const proposal = await travelVote.proposals(0)
+      const proposedDestination = proposal[proposalStruct.destination]
+
+      assert.equal(proposedDestination, destination)
+    })
+
+    it("sets creator as msg sender", async () => {
+      const proposal = await travelVote.proposals(0)
+      const creator = proposal[proposalStruct.creator]
+
+      assert.equal(creator, accounts[0])
+    })
+
+    it("sets voteCount to eq 0", async () => {
+      const proposal = await travelVote.proposals(0)
+      const count = proposal[proposalStruct.voteCount]
+
+      assert.equal(count, 0)
+    })
   })
 
 
