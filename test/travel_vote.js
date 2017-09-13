@@ -3,11 +3,18 @@ import expectThrow from './helpers/expectThrow';
 import assertJump from './helpers/assertJump';
 
 contract('TravelVote', (accounts) => {
+  const destination = "Disney Land"
   let travelVote;
   const proposalStruct = {
     destination: 0,
     creator: 1,
-    voteCount: 2
+    voteCount: 2,
+    yesCount: 3,
+    noCount: 4
+  }
+  const voteType = {
+    Yes: 0,
+    No: 1
   }
 
   beforeEach(async function () {
@@ -21,8 +28,6 @@ contract('TravelVote', (accounts) => {
   })
 
   describe("createProposal", () => {
-    const destination = "Disney Land"
-
     beforeEach(async function () {
       await travelVote.createProposal(destination)
     });
@@ -46,6 +51,44 @@ contract('TravelVote', (accounts) => {
       const count = proposal[proposalStruct.voteCount]
 
       assert.equal(count, 0)
+    })
+  })
+
+  describe("vote", () => {
+    beforeEach(async function () {
+      await travelVote.createProposal(destination)
+    });
+
+    it("add proposals into voted histroy", async () => {
+      const proposalIndex = 0
+      await travelVote.vote(proposalIndex, voteType.Yes)
+
+      const voter = await travelVote.getVoter(accounts[0])
+      const proposalIndexes = Object.keys(voter[1]).map((key) => (parseInt(key)))
+
+      assert.include(proposalIndexes, proposalIndex)
+    })
+
+    it("increment voteCount and yesCount if vote Yes", async () => {
+      const proposalIndex = 0
+      await travelVote.vote(proposalIndex, voteType.Yes)
+
+      const proposal = await travelVote.proposals(proposalIndex)
+
+      assert.equal(parseInt(proposal[proposalStruct.voteCount]), 1)
+      assert.equal(parseInt(proposal[proposalStruct.yesCount]), 1)
+      assert.equal(parseInt(proposal[proposalStruct.noCount]), 0)
+    })
+
+    it("increment voteCount and noCount if vote No", async () => {
+      const proposalIndex = 0
+      await travelVote.vote(proposalIndex, voteType.No)
+
+      const proposal = await travelVote.proposals(proposalIndex)
+
+      assert.equal(parseInt(proposal[proposalStruct.voteCount]), 1)
+      assert.equal(parseInt(proposal[proposalStruct.yesCount]), 0)
+      assert.equal(parseInt(proposal[proposalStruct.noCount]), 1)
     })
   })
 

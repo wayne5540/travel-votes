@@ -1,15 +1,25 @@
 pragma solidity ^0.4.15;
 
 contract TravelVote {
-  address public owner;
-
   struct Proposal {
     string destination;
     address creator;
     uint voteCount;
+    uint yesCount;
+    uint noCount;
   }
 
+  struct Voter {
+    address voterAddress;
+    uint[] votedProposals; // indexes of voted proposals
+  }
+
+  enum VoteType { Yes, No }
+
+  address public owner;
   Proposal[] public proposals;
+
+  mapping(address => Voter) public voters;
 
   function TravelVote() {
     owner = msg.sender;
@@ -19,10 +29,28 @@ contract TravelVote {
     proposals.push(Proposal({
       destination: destination,
       creator: msg.sender,
-      voteCount: 0
+      voteCount: 0,
+      yesCount: 0,
+      noCount: 0
     }));
   }
 
+  function vote(uint proposal, VoteType decision) {
+    voters[msg.sender].votedProposals.push(proposal);
+
+    if (decision == VoteType.Yes) {
+      proposals[proposal].yesCount = proposals[proposal].yesCount + 1;
+    } else if (decision == VoteType.No) {
+      proposals[proposal].noCount = proposals[proposal].noCount + 1;
+    } else {
+      revert();
+    }
+    proposals[proposal].voteCount = proposals[proposal].voteCount + 1;
+  }
+
+  function getVoter(address addr) public constant returns (address, uint[]) {
+    return (voters[addr].voterAddress, voters[addr].votedProposals);
+  }
 
   // address public owner;
   // bool public inProgress;
