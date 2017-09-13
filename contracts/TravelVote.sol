@@ -36,7 +36,13 @@ contract TravelVote {
   }
 
   function vote(uint proposal, VoteType decision) {
-    voters[msg.sender].votedProposals.push(proposal);
+    Voter storage sender = voters[msg.sender];
+
+    for (uint index = 0; index < sender.votedProposals.length; index++) {
+      if (sender.votedProposals[index] == proposal) {
+        revert();
+      }
+    }
 
     if (decision == VoteType.Yes) {
       proposals[proposal].yesCount = proposals[proposal].yesCount + 1;
@@ -46,6 +52,7 @@ contract TravelVote {
       revert();
     }
     proposals[proposal].voteCount = proposals[proposal].voteCount + 1;
+    sender.votedProposals.push(proposal);
   }
 
   function getVoter(address addr) public constant returns (address, uint[]) {

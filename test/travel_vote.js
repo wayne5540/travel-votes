@@ -59,6 +59,14 @@ contract('TravelVote', (accounts) => {
       await travelVote.createProposal(destination)
     });
 
+    it("can't vote twice", async () => {
+      const proposalIndex = 0
+      await travelVote.vote(proposalIndex, voteType.Yes)
+      await expectThrow(
+        travelVote.vote(proposalIndex, voteType.Yes)
+      )
+    })
+
     it("add proposals into voted histroy", async () => {
       const proposalIndex = 0
       await travelVote.vote(proposalIndex, voteType.Yes)
