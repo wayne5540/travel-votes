@@ -38,6 +38,10 @@ contract TravelVote {
   }
 
   function closeProposal(uint proposal) {
+    if (msg.sender != proposals[proposal].creator) {
+      revert();
+    }
+
     proposals[proposal].isClosed = true;
   }
 

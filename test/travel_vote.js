@@ -41,6 +41,13 @@ contract('TravelVote', (accounts) => {
 
       assert.isTrue(isClosed)
     })
+
+    it("only creator can close proposal", async () => {
+      const proposalIndex = 0
+      await expectThrow(
+        travelVote.closeProposal(proposalIndex, { from: accounts[1] })
+      )
+    })
   })
 
   describe("createProposal", () => {
