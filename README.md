@@ -57,6 +57,10 @@ geth --fast --testnet --rpc --rpcapi "eth,net,web3,personal" \
 ```
 
 
+### Client
+
+https://scotch.io/tutorials/setup-a-react-environment-using-webpack-and-babel
+
 ### Web3
 
 web3.eth.sendTransaction({from: web3.eth.accounts[0], to: '0x56C60909FEfDDdEE4F13D55e51c562b81A471f80', value: web3.toWei(2, "ether")})
