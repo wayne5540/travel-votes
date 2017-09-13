@@ -7,6 +7,7 @@ contract TravelVote {
     uint voteCount;
     uint yesCount;
     uint noCount;
+    bool isClosed;
   }
 
   struct Voter {
@@ -31,8 +32,13 @@ contract TravelVote {
       creator: msg.sender,
       voteCount: 0,
       yesCount: 0,
-      noCount: 0
+      noCount: 0,
+      isClosed: false
     }));
+  }
+
+  function closeProposal(uint proposal) {
+    proposals[proposal].isClosed = true;
   }
 
   function vote(uint proposal, VoteType decision) {

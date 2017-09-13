@@ -10,7 +10,8 @@ contract('TravelVote', (accounts) => {
     creator: 1,
     voteCount: 2,
     yesCount: 3,
-    noCount: 4
+    noCount: 4,
+    isClosed: 5
   }
   const voteType = {
     Yes: 0,
@@ -19,7 +20,7 @@ contract('TravelVote', (accounts) => {
 
   beforeEach(async function () {
     travelVote = await TravelVote.new();
-  });
+  })
 
   it("sets sender as owner", async () => {
     const owner = await travelVote.owner()
@@ -27,30 +28,37 @@ contract('TravelVote', (accounts) => {
     assert.equal(owner, accounts[0])
   })
 
+  describe("clodeProposal", () => {
+    beforeEach(async function () {
+      await travelVote.createProposal(destination)
+    })
+
+    it("closes proposal", async () => {
+      const proposalIndex = 0
+      await travelVote.closeProposal(proposalIndex)
+      const proposal = await travelVote.proposals(proposalIndex)
+      const isClosed = proposal[proposalStruct.isClosed]
+
+      assert.isTrue(isClosed)
+    })
+  })
+
   describe("createProposal", () => {
     beforeEach(async function () {
       await travelVote.createProposal(destination)
-    });
+    })
 
     it("creates proposal", async () => {
       const proposal = await travelVote.proposals(0)
       const proposedDestination = proposal[proposalStruct.destination]
+      const creator = proposal[proposalStruct.creator]
+      const count = proposal[proposalStruct.voteCount]
+      const isClosed = proposal[proposalStruct.isClosed]
 
       assert.equal(proposedDestination, destination)
-    })
-
-    it("sets creator as msg sender", async () => {
-      const proposal = await travelVote.proposals(0)
-      const creator = proposal[proposalStruct.creator]
-
       assert.equal(creator, accounts[0])
-    })
-
-    it("sets voteCount to eq 0", async () => {
-      const proposal = await travelVote.proposals(0)
-      const count = proposal[proposalStruct.voteCount]
-
       assert.equal(count, 0)
+      assert.isFalse(isClosed)
     })
   })
 

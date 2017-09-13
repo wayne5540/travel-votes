@@ -8,7 +8,7 @@ A ethereum contract written in Sodility for practicing.
 
 - [v] 可以新增要去的地點提案
 - [v] 可以投票參與（一個地點限一票）
-- [] 可以看到每個提案目前參與和不參與的人數
+- [v] 可以看到每個提案目前參與和不參與的人數
 
 ### 提案發起人
 
