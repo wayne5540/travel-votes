@@ -13,7 +13,7 @@ A ethereum contract written in Sodility for practicing.
 ### 提案發起人
 
 - [v] 可以結束提案
-- [] 一但提案結束，不允許任何人再投票或是改變投票狀態
+- [v] 一但提案結束，不允許任何人再投票
 
 ### As contract owner
 

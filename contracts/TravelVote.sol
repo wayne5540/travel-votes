@@ -46,6 +46,8 @@ contract TravelVote {
   }
 
   function vote(uint proposal, VoteType decision) {
+    require(!proposals[proposal].isClosed);
+
     Voter storage sender = voters[msg.sender];
 
     for (uint index = 0; index < sender.votedProposals.length; index++) {
