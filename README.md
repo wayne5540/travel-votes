@@ -38,12 +38,13 @@ truffle deploy
 
 
 Deploy to testnet
+
+http://faucet.ropsten.be:3001/
+
 ```
 geth --testnet --rpc --datadir /usr/local/var/ethereum-testnet-data console 2>> /usr/local/var/log/geth.testnet.log
 
-personal.unlockAccount(eth.accounts[2], 200)
-
-11111111
+personal.unlockAccount(eth.accounts[2], "11111111")
 
 miner.setEtherbase(eth.accounts[2])
 
