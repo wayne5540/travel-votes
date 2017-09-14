@@ -19,6 +19,7 @@
     "html-webpack-plugin": "^2.30.1",
     "path": "^0.12.7",
     "react": "^15.6.1",
+    "react-bootstrap": "^0.31.3",
     "react-dom": "^15.6.1",
     "truffle-contract": "^3.0.0",
     "web3": "1.0.0-beta.18",

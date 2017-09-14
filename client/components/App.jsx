@@ -1,5 +1,6 @@
 import React from 'react';
 import Web3 from 'web3';
+import { Button, Col, Row, Grid, Panel } from 'react-bootstrap';
 
 const contract = require("truffle-contract");
 const contractJson = require("../../build/contracts/TravelVote.json")
@@ -24,23 +25,36 @@ TravelNoteContract.setProvider(myWeb3.currentProvider)
 
 const ProposalItem = (props) => {
   return (
-    <div>
-      <h2>Destination:</h2>
-      <p>{props.destination}</p>
-    </div>
+    <Col md={4}>
+      <Panel header={props.destination} footer={props.creator}>
+        <dl className="dl-horizontal">
+          <dt>Total Voted:</dt>
+          <dd>{props.voteCount}</dd>
+
+          <dt>Yes:</dt>
+          <dd>{props.yesCount}</dd>
+
+          <dt>No:</dt>
+          <dd>{props.noCount}</dd>
+        </dl>
+        <Button>Vote</Button>
+      </Panel>
+    </Col>
   )
 }
 
 const ProposalBlock = (props) => {
   const proposalItems = props.proposals.map((proposal) => (
-    <ProposalItem destination={proposal.destination} key={proposal.id} />
+    <ProposalItem {...proposal} key={proposal.id} />
   ))
 
   return (
-    <div>
-      <h1>Proposals:</h1>
+    <Row>
+      <Col md={12} className="text-center">
+        <h2>Proposals:</h2>
+      </Col>
       {proposalItems}
-    </div>
+    </Row>
   )
 }
 
@@ -143,13 +157,19 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <div style={{ textAlign: 'center' }}>
-        <h1>Travel Vote</h1>
-        <h2>Vote where you want to go.</h2>
-        <p>Contract: {this.state.contractAddress}</p>
-        <p>Contract owner: {this.state.owner}</p>
-        <ProposalBlock proposals={this.state.proposals}/>
-      </div>
+      <Grid>
+        <Row>
+          <Col xs={12} md={8} mdOffset={2}>
+            <header className="text-center">
+              <h1>Travel Vote</h1>
+              <h2>Vote where you want to go.</h2>
+              <p>Contract: {this.state.contractAddress}</p>
+              <p>Contract owner: {this.state.owner}</p>
+            </header>
+          </Col>
+          <ProposalBlock proposals={this.state.proposals} />
+        </Row>
+      </Grid>
     )
   }
 }
