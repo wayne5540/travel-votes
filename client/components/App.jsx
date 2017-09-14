@@ -1,6 +1,12 @@
 import React from 'react';
 import Web3 from 'web3';
-import { Button, Col, Row, Grid, Panel } from 'react-bootstrap';
+import {
+  Col,
+  Row,
+  Grid
+} from 'react-bootstrap';
+
+import ProposalBlock from './ProposalBlock';
 
 const contract = require("truffle-contract");
 const contractJson = require("../../build/contracts/TravelVote.json")
@@ -21,42 +27,6 @@ const myWeb3 = getWeb3()
 const TravelNoteContract = contract(contractJson)
 TravelNoteContract.setProvider(myWeb3.currentProvider)
 
-
-
-const ProposalItem = (props) => {
-  return (
-    <Col md={4}>
-      <Panel header={props.destination} footer={props.creator}>
-        <dl className="dl-horizontal">
-          <dt>Total Voted:</dt>
-          <dd>{props.voteCount}</dd>
-
-          <dt>Yes:</dt>
-          <dd>{props.yesCount}</dd>
-
-          <dt>No:</dt>
-          <dd>{props.noCount}</dd>
-        </dl>
-        <Button>Vote</Button>
-      </Panel>
-    </Col>
-  )
-}
-
-const ProposalBlock = (props) => {
-  const proposalItems = props.proposals.map((proposal) => (
-    <ProposalItem {...proposal} key={proposal.id} />
-  ))
-
-  return (
-    <Row>
-      <Col md={12} className="text-center">
-        <h2>Proposals:</h2>
-      </Col>
-      {proposalItems}
-    </Row>
-  )
-}
 
 const getRawProposals = async (instance) => {
   let proposals = []
@@ -88,12 +58,12 @@ const normalizeProposals = (rawProposals) => {
   ))
 }
 
-
 export default class App extends React.Component {
   constructor(props, context) {
     super(props, context);
 
     this.state = {
+      contract: {},
       contractAddress: "",
       owner: "Wayne",
       proposals: []
@@ -102,8 +72,9 @@ export default class App extends React.Component {
 
   componentDidMount() {
     this.getContract().then((instance) => {
-      this.getOwner(instance)
-      this.getProposals(instance)
+      this.setState({ contract: instance })
+      this.getOwner()
+      this.getProposals()
     })
   }
 
@@ -115,20 +86,8 @@ export default class App extends React.Component {
     })
   }
 
-  createProposal() {
-    const self = this
-
-    myWeb3.eth.getAccounts((error, accounts) => {
-      if (error) {
-        console.log(error);
-      }
-
-      // instance.createProposal("Disnnnnnnney!", { from: accounts[0] })
-
-    })
-  }
-
-  getProposals(instance) {
+  getProposals() {
+    const instance = this.state.contract
     const self = this
 
     getRawProposals(instance).then((rawProposals) => {
@@ -139,7 +98,8 @@ export default class App extends React.Component {
     })
   }
 
-  getOwner(instance) {
+  getOwner() {
+    const instance = this.state.contract
     const self = this
 
     myWeb3.eth.getAccounts( (error, accounts) => {
@@ -155,6 +115,31 @@ export default class App extends React.Component {
     })
   }
 
+  createProposalHandler(event, inputValue) {
+    event.preventDefault()
+
+    this.createProposal(inputValue)
+  }
+
+  createProposal(destination) {
+    const instance = this.state.contract
+    const self = this
+
+    myWeb3.eth.getAccounts((error, accounts) => {
+      if (error) {
+        console.log(error);
+      }
+
+      instance.createProposal(destination, { from: accounts[0] }).then(() => {
+        self.getProposals()
+      }).catch((error) => {
+        console.log("createProposal Error:", error)
+      })
+
+    })
+  }
+
+
   render() {
     return (
       <Grid>
@@ -167,7 +152,9 @@ export default class App extends React.Component {
               <p>Contract owner: {this.state.owner}</p>
             </header>
           </Col>
-          <ProposalBlock proposals={this.state.proposals} />
+          <ProposalBlock
+            proposals={this.state.proposals}
+            createProposalHandler={this.createProposalHandler.bind(this)} />
         </Row>
       </Grid>
     )
