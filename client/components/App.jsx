@@ -53,7 +53,8 @@ const normalizeProposals = (rawProposals) => {
       voteCount: parseInt(rawProposal[2]),
       yesCount: parseInt(rawProposal[3]),
       noCount: parseInt(rawProposal[4]),
-      isClosed: rawProposal[5]
+      isClosed: rawProposal[5],
+      isPending: false
     }
   ))
 }
@@ -130,12 +131,29 @@ export default class App extends React.Component {
         console.log(error);
       }
 
-      instance.createProposal(destination, { from: accounts[0] }).then(() => {
-        self.getProposals()
+      instance.createProposal(destination, { from: accounts[0] }).then((something) => {
+        console.log("something", something)
+        // TODO:
+        // * add event
+        // * add state for proposal
+        // * listen succesful event
+        // self.getProposals()
+
+        const newProposal = {
+          id: self.state.proposals.length,
+          destination: destination,
+          creator: accounts[0],
+          voteCount: 0,
+          yesCount: 0,
+          noCount: 0,
+          isClosed: false,
+          isPending: true
+        }
+
+        self.setState({ proposals: [...self.state.proposals, newProposal] })
       }).catch((error) => {
         console.log("createProposal Error:", error)
       })
-
     })
   }
 
@@ -160,5 +178,3 @@ export default class App extends React.Component {
     )
   }
 }
-
-// export default App
