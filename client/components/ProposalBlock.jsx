@@ -1,6 +1,5 @@
 import React from 'react';
 import ProposalItem from './ProposalItem';
-import CreateProposalForm from './CreateProposalForm';
 
 import {
   Col,
@@ -14,10 +13,6 @@ const ProposalBlock = (props) => {
 
   return (
     <Row>
-      <Col md={12} className="text-center">
-        <h2>Proposals</h2>
-        <CreateProposalForm createProposalHandler={props.createProposalHandler} destinationInput={props.destinationInput} />
-      </Col>
       {proposalItems}
     </Row>
   )

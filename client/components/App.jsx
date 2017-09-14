@@ -7,6 +7,7 @@ import {
 } from 'react-bootstrap';
 
 import ProposalBlock from './ProposalBlock';
+import CreateProposalForm from './CreateProposalForm';
 
 const contract = require("truffle-contract");
 const contractJson = require("../../build/contracts/TravelVote.json")
@@ -170,9 +171,13 @@ export default class App extends React.Component {
               <p>Contract owner: {this.state.owner}</p>
             </header>
           </Col>
-          <ProposalBlock
-            proposals={this.state.proposals}
-            createProposalHandler={this.createProposalHandler.bind(this)} />
+          <Row>
+            <Col md={12} className="text-center">
+              <h2>Proposals</h2>
+              <CreateProposalForm createProposalHandler={this.createProposalHandler.bind(this)} />
+            </Col>
+          </Row>
+          <ProposalBlock proposals={this.state.proposals} />
         </Row>
       </Grid>
     )
