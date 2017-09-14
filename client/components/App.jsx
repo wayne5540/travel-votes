@@ -45,9 +45,28 @@ const getRawProposals = async (instance) => {
   return proposals
 }
 
-const normalizeProposals = (rawProposals) => {
-  return rawProposals.map((rawProposal, index) => (
-    {
+const getVotedProposalIds = async (instance, account) => {
+  const voterAddress = 0
+  let votedProposalIds = []
+
+  const voter = await instance.getVoter(account)
+
+  try {
+    if (voter[voterAddress] != "0x0000000000000000000000000000000000000000") {
+      votedProposalIds = voter[1].map((id) => (parseInt(id)))
+    }
+  } catch (error) {
+    console.log("getVotedProposalIds Error:", error)
+  }
+
+  return votedProposalIds
+}
+
+const normalizeProposals = (rawProposals, votedProposalIds) => {
+  return rawProposals.map((rawProposal, index) => {
+    let voted = votedProposalIds.includes(index)
+
+    return {
       id: index,
       destination: rawProposal[0],
       creator: rawProposal[1],
@@ -55,9 +74,18 @@ const normalizeProposals = (rawProposals) => {
       yesCount: parseInt(rawProposal[3]),
       noCount: parseInt(rawProposal[4]),
       isClosed: rawProposal[5],
-      isPending: false
+      isPending: false,
+      voted: voted
     }
-  ))
+  })
+}
+
+
+const getRawProposalsAndVotedProposals = async (instance, account) => {
+  const rawProposals = await getRawProposals(instance)
+  const votedProposalIds = await getVotedProposalIds(instance, account)
+
+  return { rawProposals, votedProposalIds }
 }
 
 const vote = async (instance, account, proposalIndex) => {
@@ -103,11 +131,17 @@ export default class App extends React.Component {
     const instance = this.state.contract
     const self = this
 
-    getRawProposals(instance).then((rawProposals) => {
-      let proposals = normalizeProposals(rawProposals)
-      self.setState({ proposals: proposals })
-    }).catch((error) => {
-      console.log("this.getProposals Error:", error)
+    myWeb3.eth.getAccounts((error, accounts) => {
+      if (error) {
+        console.log(error);
+      }
+
+      getRawProposalsAndVotedProposals(instance, accounts[0]).then(
+        ({ rawProposals, votedProposalIds }) => {
+          const proposals = normalizeProposals(rawProposals, votedProposalIds)
+          self.setState({ proposals: proposals })
+        }
+      )
     })
   }
 
@@ -149,7 +183,6 @@ export default class App extends React.Component {
         // * add event
         // * add state for proposal
         // * listen succesful event
-        // self.getProposals()
 
         const newProposal = {
           id: self.state.proposals.length,
@@ -179,8 +212,6 @@ export default class App extends React.Component {
       }
 
       vote(instance, accounts[0], proposalId).then((_result) => {
-        console.log(_result)
-
         const newProposals = self.state.proposals.map((proposal) => {
           if (proposal.id != proposalId) {
             return proposal
@@ -189,7 +220,7 @@ export default class App extends React.Component {
           const yesCount = proposal.yesCount + 1
           const voteCount = proposal.voteCount + 1
 
-          return Object.assign(proposal, { yesCount: yesCount, voteCount: voteCount })
+          return Object.assign(proposal, { yesCount: yesCount, voteCount: voteCount, voted: true })
         })
 
         self.setState({ proposals: newProposals })
