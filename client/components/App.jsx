@@ -16,9 +16,9 @@ const getWeb3 = () => {
   }
 }
 
-const web3 = getWeb3()
+const myWeb3 = getWeb3()
 const TravelNoteContract = contract(contractJson)
-TravelNoteContract.setProvider(web3.currentProvider)
+TravelNoteContract.setProvider(myWeb3.currentProvider)
 
 
 
@@ -106,7 +106,7 @@ export default class App extends React.Component {
   createProposal() {
     const self = this
 
-    web3.eth.getAccounts((error, accounts) => {
+    myWeb3.eth.getAccounts((error, accounts) => {
       if (error) {
         console.log(error);
       }
@@ -131,7 +131,7 @@ export default class App extends React.Component {
   getOwner(instance) {
     const self = this
 
-    web3.eth.getAccounts( (error, accounts) => {
+    myWeb3.eth.getAccounts( (error, accounts) => {
       if (error) {
         console.log(error);
       }
