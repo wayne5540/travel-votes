@@ -1,4 +1,5 @@
 const path = require('path');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
@@ -11,7 +12,7 @@ module.exports = {
   entry: ['babel-polyfill', './client/index.js'],
   output: {
     path: path.resolve('dist'),
-    filename: 'index_bundle.js'
+    filename: 'app.bundle.js'
   },
   module: {
     loaders: [
@@ -22,5 +23,8 @@ module.exports = {
   resolve: {
     extensions: [".jsx", ".js"]
   },
-  plugins: [HtmlWebpackPluginConfig]
+  plugins: [
+    new CleanWebpackPlugin(['dist']),
+    HtmlWebpackPluginConfig
+  ]
 }
