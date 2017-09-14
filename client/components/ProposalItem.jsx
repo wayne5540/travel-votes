@@ -8,7 +8,7 @@ import {
 const ProposalItem = (props) => {
   const bsStyle = props.isPending ? 'warning' : 'info'
   const voteBtn = <Button onClick={() => { props.onVoteHandler(props.id) }} bsStyle="primary" block>Vote</Button>
-  const unvoteBtn = <Button disabled block>Unvote</Button>
+  const disabledVoteBtn = <Button disabled block>Vote</Button>
 
   return (
     <Col md={4}>
@@ -23,7 +23,7 @@ const ProposalItem = (props) => {
           <dt>No:</dt>
           <dd>{props.noCount}</dd>
         </dl>
-        { props.voted ? unvoteBtn : voteBtn }
+        { props.isPending ? disabledVoteBtn : voteBtn }
       </Panel>
     </Col>
   )
