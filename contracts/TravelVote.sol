@@ -18,6 +18,7 @@ contract TravelVote {
   enum VoteType { Yes, No }
 
   address public owner;
+  uint public proposalCount;
   Proposal[] public proposals;
 
   mapping(address => Voter) public voters;
@@ -35,6 +36,7 @@ contract TravelVote {
       noCount: 0,
       isClosed: false
     }));
+    proposalCount = proposalCount + 1;
   }
 
   function closeProposal(uint proposal) {

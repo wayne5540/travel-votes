@@ -57,6 +57,7 @@ contract('TravelVote', (accounts) => {
 
     it("creates proposal", async () => {
       const proposal = await travelVote.proposals(0)
+      const proposalCount = await travelVote.proposalCount()
       const proposedDestination = proposal[proposalStruct.destination]
       const creator = proposal[proposalStruct.creator]
       const count = proposal[proposalStruct.voteCount]
@@ -65,6 +66,7 @@ contract('TravelVote', (accounts) => {
       assert.equal(proposedDestination, destination)
       assert.equal(creator, accounts[0])
       assert.equal(count, 0)
+      assert.equal(proposalCount, 1)
       assert.isFalse(isClosed)
     })
   })

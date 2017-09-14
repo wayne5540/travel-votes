@@ -36,7 +36,9 @@ Deploy to testnet
 ```
 geth --testnet --rpc --datadir /usr/local/var/ethereum-testnet-data console 2>> /usr/local/var/log/geth.testnet.log
 
-personal.unlockAccount(eth.accounts[2])
+personal.unlockAccount(eth.accounts[2], 200)
+
+11111111
 
 miner.setEtherbase(eth.accounts[2])
 
@@ -68,5 +70,9 @@ yarn start
 
 ## Web3
 
-web3.eth.sendTransaction({from: web3.eth.accounts[0], to: '0x56C60909FEfDDdEE4F13D55e51c562b81A471f80', value: web3.toWei(2, "ether")})
+web3.eth.sendTransaction({from: web3.eth.accounts[2], to: '0x56C60909FEfDDdEE4F13D55e51c562b81A471f80', value: web3.toWei(2, "ether")})
+
+truffle console
+
+TravelVote.deployed().then(function(instance) { instance.createProposal("Disney Land!") } )
 
