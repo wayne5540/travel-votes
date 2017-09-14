@@ -44,9 +44,8 @@ const ProposalBlock = (props) => {
   )
 }
 
-const getRawProposals = async () => {
+const getRawProposals = async (instance) => {
   let proposals = []
-  const instance = await TravelNoteContract.deployed()
 
   const proposalCount = await instance.proposalCount()
   console.log("proposalCount:", parseInt(proposalCount))
@@ -83,15 +82,25 @@ export default class App extends React.Component {
     super(props, context);
 
     this.state = {
+      contractAddress: "",
       owner: "Wayne",
       proposals: []
     }
   }
 
   componentDidMount() {
-    this.getOwner()
-    // this.createProposal()
-    this.getProposals()
+    this.getContract().then((instance) => {
+      this.getOwner(instance)
+      this.getProposals(instance)
+    })
+  }
+
+  getContract() {
+    const self = this
+    return TravelNoteContract.deployed().then((instance) => {
+      self.setState({ contractAddress: instance.address })
+      return instance
+    })
   }
 
   createProposal() {
@@ -102,21 +111,15 @@ export default class App extends React.Component {
         console.log(error);
       }
 
-      TravelNoteContract.deployed().then(function (instance) {
-        // return instance.owner()
-        instance.createProposal("Disnnnnnnney!", { from: accounts[0] })
-      }).then(function (owner) {
-        self.setState({ owner })
-      }).catch(function (err) {
-        console.log("Error:", err)
-      })
+      // instance.createProposal("Disnnnnnnney!", { from: accounts[0] })
+
     })
   }
 
-  getProposals() {
+  getProposals(instance) {
     const self = this
 
-    getRawProposals().then((rawProposals) => {
+    getRawProposals(instance).then((rawProposals) => {
       let proposals = normalizeProposals(rawProposals)
       console.log("inside:", proposals)
       self.setState({ proposals: proposals })
@@ -125,7 +128,7 @@ export default class App extends React.Component {
     })
   }
 
-  getOwner() {
+  getOwner(instance) {
     const self = this
 
     web3.eth.getAccounts( (error, accounts) => {
@@ -133,9 +136,7 @@ export default class App extends React.Component {
         console.log(error);
       }
 
-      TravelNoteContract.deployed().then(function (instance) {
-        return instance.owner()
-      }).then(function (owner) {
+      instance.owner().then((owner) => {
         self.setState({ owner })
       }).catch(function (err) {
         console.log("Error:", err)
@@ -146,7 +147,10 @@ export default class App extends React.Component {
   render() {
     return (
       <div style={{ textAlign: 'center' }}>
-        <h1>Hello {this.state.owner}</h1>
+        <h1>Travel Vote</h1>
+        <h2>Vote where you want to go.</h2>
+        <p>Contract: {this.state.contractAddress}</p>
+        <p>Contract owner: {this.state.owner}</p>
         <ProposalBlock proposals={this.state.proposals}/>
       </div>
     )
