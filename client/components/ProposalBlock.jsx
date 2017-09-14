@@ -8,7 +8,7 @@ import {
 
 const ProposalBlock = (props) => {
   const proposalItems = props.proposals.map((proposal) => (
-    <ProposalItem {...proposal} key={proposal.id} />
+    <ProposalItem {...proposal} onVoteHandler={ props.onVoteHandler} key={proposal.id} />
   ))
 
   return (

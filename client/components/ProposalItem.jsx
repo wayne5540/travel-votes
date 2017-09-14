@@ -6,9 +6,11 @@ import {
 } from 'react-bootstrap';
 
 const ProposalItem = (props) => {
+  const bsStyle = props.isPending ? 'warning' : 'info'
+
   return (
     <Col md={4}>
-      <Panel header={props.destination} footer={props.creator}>
+      <Panel header={props.destination} footer={props.creator} bsStyle={bsStyle}>
         <dl className="dl-horizontal">
           <dt>Total Voted:</dt>
           <dd>{props.voteCount}</dd>
@@ -19,7 +21,7 @@ const ProposalItem = (props) => {
           <dt>No:</dt>
           <dd>{props.noCount}</dd>
         </dl>
-        <Button block>Vote</Button>
+        <Button onClick={() => { props.onVoteHandler(props.id) }} block>Vote</Button>
       </Panel>
     </Col>
   )

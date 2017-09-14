@@ -60,14 +60,25 @@ const normalizeProposals = (rawProposals) => {
   ))
 }
 
+const vote = async (instance, account, proposalIndex) => {
+  const yes = 0
+
+  try {
+    const result = await instance.vote(proposalIndex, yes, { from: account })
+    return result
+  } catch (error) {
+    console.log("vote Error:", error)
+  }
+}
+
 export default class App extends React.Component {
   constructor(props, context) {
     super(props, context);
 
     this.state = {
       contract: {},
-      contractAddress: "",
-      owner: "Wayne",
+      contractAddress: "Fetching contract address...",
+      owner: "Fetching owner...",
       proposals: []
     }
   }
@@ -158,6 +169,34 @@ export default class App extends React.Component {
     })
   }
 
+  onVoteHandler(proposalId) {
+    const instance = this.state.contract
+    const self = this
+
+    myWeb3.eth.getAccounts((error, accounts) => {
+      if (error) {
+        console.log(error);
+      }
+
+      vote(instance, accounts[0], proposalId).then((_result) => {
+        console.log(_result)
+
+        const newProposals = self.state.proposals.map((proposal) => {
+          if (proposal.id != proposalId) {
+            return proposal
+          }
+
+          const yesCount = proposal.yesCount + 1
+          const voteCount = proposal.voteCount + 1
+
+          return Object.assign(proposal, { yesCount: yesCount, voteCount: voteCount })
+        })
+
+        self.setState({ proposals: newProposals })
+      })
+    })
+  }
+
 
   render() {
     return (
@@ -177,7 +216,7 @@ export default class App extends React.Component {
               <CreateProposalForm createProposalHandler={this.createProposalHandler.bind(this)} />
             </Col>
           </Row>
-          <ProposalBlock proposals={this.state.proposals} />
+          <ProposalBlock proposals={this.state.proposals} onVoteHandler={this.onVoteHandler.bind(this)} />
         </Row>
       </Grid>
     )
