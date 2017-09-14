@@ -19,6 +19,11 @@ A ethereum contract written in Sodility for practicing.
 
 - [] 可以刪除提案
 
+### Bugs
+
+- [] 重新整理頁面會先 render component 才找到 window.web3
+  - `Uncaught (in promise) TypeError: Cannot read property 'apply' of undefined`
+
 ## Development
 
 ```

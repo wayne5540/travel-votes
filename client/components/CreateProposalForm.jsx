@@ -8,28 +8,49 @@ import {
   HelpBlock
 } from 'react-bootstrap';
 
-const CreateProposalForm = (props) => {
-  let input;
+export default class CreateProposalForm extends React.Component {
+  constructor(props, context) {
+    super(props, context);
 
-  return (
-    <Form onSubmit={(event) => { props.createProposalHandler(event, input.value) }}>
-      <FormGroup validationState="warning">
-        <InputGroup>
-          <FormControl
-            type="text"
-            placeholder="Where do you want to go?"
-            inputRef={node => input = node}
-          />
-          <InputGroup.Button>
-            <Button type="submit">
-              Propose
-            </Button>
-          </InputGroup.Button>
-        </InputGroup>
-        <HelpBlock>Destination can't ne blank</HelpBlock>
-      </FormGroup>
-    </Form>
-  )
+    this.state = {
+      validationState: null,
+      inputValue: "",
+      helpText: ""
+    }
+  }
+
+  handleInputChange(event) {
+    this.setState({
+      inputValue: event.target.value,
+      validationState: (event.target.value ? "success" : "error"),
+      helpText: (event.target.value ? "" : "Can't be blank")
+    })
+  }
+
+  isValidInputValue() {
+    return this.state.inputValue ? true : false
+  }
+
+  render() {
+    return (
+      <Form onSubmit={(event) => { props.createProposalHandler(event, this.state.inputValue) }}>
+        <FormGroup validationState={this.state.validationState}>
+          <InputGroup>
+            <FormControl
+              type="text"
+              placeholder="Where do you want to go?"
+              value={this.state.inputValue}
+              onChange={this.handleInputChange.bind(this)}
+            />
+            <InputGroup.Button>
+              <Button type="submit" disabled={!this.isValidInputValue()} >
+                Propose
+              </Button>
+            </InputGroup.Button>
+          </InputGroup>
+          <HelpBlock>{this.state.helpText}</HelpBlock>
+        </FormGroup>
+      </Form>
+    )
+  }
 }
-
-export default CreateProposalForm
