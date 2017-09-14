@@ -51,6 +51,7 @@ contract TravelVote {
     require(!proposals[proposal].isClosed);
 
     Voter storage sender = voters[msg.sender];
+    sender.voterAddress = msg.sender;
 
     for (uint index = 0; index < sender.votedProposals.length; index++) {
       if (sender.votedProposals[index] == proposal) {

@@ -101,6 +101,7 @@ contract('TravelVote', (accounts) => {
       const proposalIndexes = Object.keys(voter[1]).map((key) => (parseInt(key)))
 
       assert.include(proposalIndexes, proposalIndex)
+      assert.equal(voter[0], accounts[0])
     })
 
     it("increment voteCount and yesCount if vote Yes", async () => {
