@@ -46,9 +46,7 @@ const ProposalBlock = (props) => {
 
 const getRawProposals = async (instance) => {
   let proposals = []
-
   const proposalCount = await instance.proposalCount()
-  console.log("proposalCount:", parseInt(proposalCount))
 
   try {
     for (var index = 0; index < parseInt(proposalCount); index++) {
@@ -121,7 +119,6 @@ export default class App extends React.Component {
 
     getRawProposals(instance).then((rawProposals) => {
       let proposals = normalizeProposals(rawProposals)
-      console.log("inside:", proposals)
       self.setState({ proposals: proposals })
     }).catch((error) => {
       console.log("this.getProposals Error:", error)
