@@ -2,6 +2,8 @@
 
 A ethereum contract written in Sodility for practicing.
 
+![](demo.gif)
+
 ## Contract features
 
 ### 所有人
