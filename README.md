@@ -2,7 +2,7 @@
 
 A ethereum contract written in Sodility for practicing.
 
-## Features
+## Contract features
 
 ### 所有人
 
@@ -15,70 +15,108 @@ A ethereum contract written in Sodility for practicing.
 - [v] 可以結束提案
 - [v] 一但提案結束，不允許任何人再投票
 
-### As contract owner
+## Client features
 
-- [] 可以刪除提案
+### 所有人
 
-### Bugs
+- [v] 可以新增要去的地點提案
+- [v] 可以投票參與（一個地點限一票）
+- [v] 可以看到每個提案目前參與和不參與的人數
 
-- [] 重新整理頁面會先 render component 才找到 window.web3
-  - `Uncaught (in promise) TypeError: Cannot read property 'apply' of undefined`
+### 提案發起人
 
-## Development
+- [] 可以結束提案
+- [] 一但提案結束，不允許任何人再投票
+
+## Getting Started
+
+install npm and [truffle](https://github.com/trufflesuite/truffle) `npm install -g truffle`
+
+install yarn (not required)
+
+```
+git clone https://github.com/wayne5540/travel-votes.git
+cd travel-vote
+yarn install
+```
+
+Running client:
+
+install [testrpc](https://github.com/ethereumjs/testrpc) `npm install -g ethereumjs-testrpc`
+
+Install [metamask](https://metamask.io/)(Chrome) or [mist](https://github.com/ethereum/mist/releases)
 
 ```
 testrpc
-
 truffle compile
-
 truffle migrate
-
-truffle deploy
-```
-
-
-Deploy to testnet
-
-http://faucet.ropsten.be:3001/
-
-```
-geth --testnet --rpc --datadir /usr/local/var/ethereum-testnet-data console 2>> /usr/local/var/log/geth.testnet.log
-
-personal.unlockAccount(eth.accounts[2], "11111111")
-
-miner.setEtherbase(eth.accounts[2])
-
-truffle migrate --network ropsten
-```
-
-
-```sh
-geth --testnet --rpc --datadir /usr/local/var/ethereum-testnet-data console 2>> /usr/local/var/log/geth.testnet.log
-```
-
-
-```sh
-#!/bin/bash
-geth --fast --testnet --rpc --rpcapi "eth,net,web3,personal" \
-     --preload "scripts/utils.js,scripts/custom.js" \
-     --datadir /usr/local/var/ethereum-testnet-data console 2>> /usr/local/var/log/geth.testnet.log
-```
-
-
-## Client
-
-https://scotch.io/tutorials/setup-a-react-environment-using-webpack-and-babel
-
-```sh
 yarn start
 ```
 
+Switch your wallet using local node 8545 port
 
-## Web3
+Go to `localhost:8080` and play around
 
-web3.eth.sendTransaction({from: web3.eth.accounts[2], to: '0x56C60909FEfDDdEE4F13D55e51c562b81A471f80', value: web3.toWei(2, "ether")})
+### Interact your deployed contract with truffle console
 
+Example
+
+**create new proposal from console**
+
+```
+TravelVote.deployed().then(function(instance) { instance.createProposal("Disney Land!") } )
+```
+
+### Test
+
+```
+truffle test
+```
+
+## Trouble Shooting
+
+### I don't have eth in my wallet
+
+**under testrpc (local node)**
+
+run those commands, it will send 2 ether to your test wallet
+
+```
 truffle console
 
-TravelVote.deployed().then(function(instance) { instance.createProposal("Disney Land!") } )
+web3.eth.sendTransaction({from: web3.eth.accounts[2], to: 'YOUR_ETH_ADDRESS', value: web3.toWei(2, "ether")})
+```
+
+**under ropsten testnet**
+
+Go to http://faucet.ropsten.be:3001/ and get some eth to your address
+
+
+## Deployment
+
+Since this project use Ethereum as "database", you can deploy contract to testnet or main chain at your local, and serve client code into any web server.
+
+### Deploy to testnet (or Main chain)
+
+You need to sync testnet node first before you deploy, the easiest way to do this is by using [geth](https://github.com/ethereum/go-ethereum/wiki/geth) or [parity](https://github.com/paritytech/parity) to sync node, example here are using `geth`
+
+**create account under testnet**
+
+https://github.com/ethereum/go-ethereum/wiki/Managing-your-accounts
+
+**deploy**
+
+In first console
+```
+geth --testnet --rpc --datadir /usr/local/var/ethereum-testnet-data console 2>> /usr/local/var/log/geth.testnet.log
+
+personal.unlockAccount(eth.accounts[0], "YOUR_ACCOUNT_PASSWORD", 36000)
+```
+
+In another console
+```
+truffle migrate --network ropsten
+```
+
+All done.
 
